@@ -5,6 +5,7 @@ const bodyParser = require("koa-body");
 const combineRouters = require("koa-combine-routers");
 
 const api = require("./server/controllers");
+
 const port = parseInt(process.env.PORT, 10) || 3002;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dir: './src', dev });
@@ -34,9 +35,6 @@ app.prepare().then(() => {
 
   router.use(api.routes(), api.allowedMethods());
   server.use(router.routes());
-
-  console.log(router.stack.map(i => i.path));
-
 
   router.get("*", async ctx => {
     await handle(ctx.req, ctx.res);
