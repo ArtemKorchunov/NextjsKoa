@@ -3,6 +3,7 @@ const next = require("next");
 const Router = require("koa-router");
 const bodyParser = require("koa-body");
 const combineRouters = require("koa-combine-routers");
+const mongoClient = require('mongodb').MongoClient;
 
 const api = require("./server/controllers");
 
@@ -15,6 +16,22 @@ app.prepare().then(() => {
   const server = new Koa();
   const router = new Router();
   server.proxy = true;
+
+  mongoClient.connect("mongodb://localhost:27017/", (err, client) => {
+
+    const db = client.db("usersdb");
+    const collection = db.collection("users");
+    let user = { name: "Tom", age: 23 };
+    collection.insertOne(user, function (err, result) {
+
+      if (err) {
+        return console.log(err);
+      }
+      console.log(result.ops);
+      client.close();
+    });
+  });
+
   server.use(
     bodyParser({
       formidable: { uploadDir: "./uploads" },
@@ -28,6 +45,10 @@ app.prepare().then(() => {
   })
   router.get("/", async ctx => {
     await app.render(ctx.req, ctx.res, "/main", ctx.query);
+    ctx.respond = false;
+  });
+  router.get("/dragDrop", async ctx => {
+    await app.render(ctx.req, ctx.res, "/dragDrop", ctx.query);
     ctx.respond = false;
   });
 
