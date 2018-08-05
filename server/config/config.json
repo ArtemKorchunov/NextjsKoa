@@ -1,0 +1,18 @@
+{
+    "port": 3002,
+    "mongoose": {
+        "uri": "mongodb://localhost:27017/next",
+        "options": {
+            "server": {
+                "socketOptions": {
+                    "keepAlive": 1
+                }
+            },
+            "useNewUrlParser": true
+        }
+    },
+    "jwt": {
+        "secret": "secret-pass-to-enter",
+        "tokenExpiration": 3600
+    }
+}

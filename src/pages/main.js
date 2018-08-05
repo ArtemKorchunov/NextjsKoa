@@ -13,9 +13,9 @@ class Main extends React.Component {
     };
   }
   render() {
-    console.log(this.props.user);
     return <div>
       <Link href="/dragDrop"><a>Go to drag and drop</a></Link>
+      <Link href="/signup"><a>SignUp</a></Link>
       <LoginForm user={this.props.user} />
     </div>;
   }

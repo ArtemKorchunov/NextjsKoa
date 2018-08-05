@@ -1,0 +1,59 @@
+const winston = require("winston");
+const path = require("path");
+const fs = require("fs");
+
+const getFilePath = m =>
+  m.filename
+    .split(path.sep)
+    .slice(-2)
+    .join(path.sep);
+
+const dirLog = path.join(process.cwd(), "logs");
+
+if (!fs.existsSync(dirLog)) {
+  fs.mkdirSync(dirLog);
+}
+
+const exFilePath = path.join(dirLog, "exception.log");
+const appFilePath = path.join(dirLog, "application.log");
+const logMaxSize = 5242880; // 5mb
+
+// Logging Levels
+// { error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5 }
+module.exports = function logger(module) {
+  return winston.createLogger({
+    transports: [
+      new winston.transports.File({
+        name: "file.error",
+        level: "error",
+        label: getFilePath(module),
+        filename: exFilePath,
+        handleExceptions: true,
+        humanReadableUnhandledException: true,
+        json: false,
+        maxSize: logMaxSize,
+        colorize: false
+      }),
+      new winston.transports.File({
+        name: "file.info",
+        level: "info",
+        label: getFilePath(module),
+        filename: appFilePath,
+        handleExceptions: false,
+        json: false,
+        maxSize: logMaxSize,
+        colorize: false
+      }),
+      new winston.transports.Console({
+        level: "debug",
+        label: getFilePath(module),
+        handleExceptions: true,
+        humanReadableUnhandledException: true,
+        json: false,
+        colorize: true,
+        timestamp: true
+      })
+    ],
+    exitOnError: false
+  });
+};

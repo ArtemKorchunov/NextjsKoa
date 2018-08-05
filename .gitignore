@@ -1,3 +1,5 @@
 /src/.next
 /src/pages/.next
 node_modules/
+.env
+out/
